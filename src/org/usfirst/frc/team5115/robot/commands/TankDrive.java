@@ -17,7 +17,7 @@ public class TankDrive extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	if (!Robot.chassis.inuse)		// if nothing else is using the wheels, then allow the controller to control them
-    		Robot.chassis.tankDrive(Robot.oi.getLeft(), Robot.oi.getRight());	// repeatedly update the drivetrain speed with new values from the controller
+    		Robot.chassis.tankDrive(Robot.oi.getLeft(), Robot.oi.getRight(), Robot.oi.getThrottle());	// repeatedly update the drivetrain speed with new values from the controller
     }
 
     // Make this return true when this Command no longer needs to run execute()

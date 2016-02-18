@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.usfirst.frc.team5115.robot.Robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.ControlMode;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,16 +18,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Chassis extends Subsystem {
 	
+	public final static int DIR_ARM = 1;
+	public final static int DIR_BALL = -1;
+	
 	public boolean inuse;	//lets outside commands know what is happening
+	public int direction;
 	
 	// key for both maps will be the position of the motor (ex 'frontleft')
     Map<String, CANTalon> motors;	// mapping text (string) to motors
     Map<String, Double> speeds;		// mapping text (string) to the speed of each motor
     
-    double xv = 0;			// accumulators for imu
-    double yv = 0;
-    double xd = 0;
-    double yd = 0;
+    AHRS navx;
     
     public Chassis() {
     //	imu = new AHRS(SerialPort.Port.kMXP);
@@ -36,18 +39,24 @@ public class Chassis extends Subsystem {
     	motors.put("right", new CANTalon(2));
     	motors.put("left2", new CANTalon(3));
     	motors.put("right2", new CANTalon(4));
-//    	motors.get("left").changeControlMode(ControlMode.Speed);
-//    	motors.get("right").changeControlMode(ControlMode.Speed);
-//    	motors.get("left").setPID(0.25, 0.005, 100);
-//    	motors.get("right").setPID(0.25, 0.005, 100);
     	
-    	motors.get("left2").changeControlMode(ControlMode.Follower);
-    	motors.get("right2").changeControlMode(ControlMode.Follower);
+    	motors.get("left").changeControlMode(TalonControlMode.Speed);
+    	motors.get("right").changeControlMode(TalonControlMode.Speed);
+    	motors.get("left").setPID(0.25, 0.002, 125);
+    	motors.get("right").setPID(0.25, 0.003, 50);
+    	
+    	motors.get("left2").changeControlMode(TalonControlMode.Follower);
+    	motors.get("right2").changeControlMode(TalonControlMode.Follower);
     	motors.get("left2").set(motors.get("left").getDeviceID());
     	motors.get("right2").set(motors.get("right").getDeviceID());
     	
+    	motors.get("right").reverseOutput(true);
+    	motors.get("right").reverseSensor(true);
+    	
     	// initialize an empty map for speeds
     	speeds = new HashMap<String, Double>();
+    	
+    	navx = new AHRS(SerialPort.Port.kMXP);
     }
     
     // searches the speeds for the highest value greater than 1, then divides all the speeds by that value
@@ -66,17 +75,49 @@ public class Chassis extends Subsystem {
     // gets the throttle from smartdashboard
     // iterates through the maps keys, setting each motor to its corresponding speed
    
-    public void tankDrive(double right, double left) {
+    public void tankDrive(double right, double left, double throttle) {
     	speeds.put("left", left);
     	speeds.put("right", right);
     	normSpeeds();
     	
-    	double throttle = Robot.oi.getThrottle();
+//    	if (Robot.arm.getLeftPot() > Arm.MAGIC_NUMBER)
+//    		throttle /= 2;
     	
     	for (String key : speeds.keySet())
-    		motors.get(key).set(speeds.get(key) * throttle);
+    		motors.get(key).set(speeds.get(key) * direction * throttle * 1000);
     	
     	SmartDashboard.putNumber("Encoder speed", motors.get("left").getSpeed());
+    }
+    
+    // NAVX WRAPPERS
+    public double getYaw() {
+    	return navx.getRoll();
+    }
+    
+    //navx is mounted sideways
+    public double getPitch() {
+    	return navx.getPitch();
+    }
+    
+    public double getRoll() {
+    	return navx.getYaw();
+    }
+    
+    public void resetImu() {
+		navx.reset();
+	}
+    
+    // ENCODER WRAPPERS
+    public double distanceTraveled() {
+    	double leftDist = motors.get("left").getPosition();
+    	double rightDist = motors.get("right").getPosition();
+    	double avgDist = (leftDist + rightDist) / 2;
+    	return avgDist / 1440 * 8 * Math.PI / 12;
+    }
+    
+    public void resetEncoders() {
+    	motors.get("left").setPosition(1);
+    	motors.get("right").setPosition(1);
     }
     
  

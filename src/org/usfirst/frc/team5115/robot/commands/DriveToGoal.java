@@ -32,7 +32,7 @@ public class DriveToGoal extends Command {
     		break;
     	case 1:
     		// Follow motion path to goal
-    		Robot.chassis.tankDrive(Motion.left(gate, dist), Motion.right(gate, dist));
+    		Robot.chassis.tankDrive(Motion.left(gate, dist), Motion.right(gate, dist), 1);
     		break;
     	case 2:
     		// Center around top goal

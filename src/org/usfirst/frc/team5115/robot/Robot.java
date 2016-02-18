@@ -9,11 +9,15 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.usfirst.frc.team5115.robot.commands.ArcadeDrive;
+import org.usfirst.frc.team5115.robot.commands.ArmDrive;
+import org.usfirst.frc.team5115.robot.commands.Fondle;
 import org.usfirst.frc.team5115.robot.commands.GimbalControl;
 import org.usfirst.frc.team5115.robot.commands.TankDrive;
+import org.usfirst.frc.team5115.robot.subsystems.Arm;
+import org.usfirst.frc.team5115.robot.subsystems.BallFondler;
 import org.usfirst.frc.team5115.robot.subsystems.Chassis;
 import org.usfirst.frc.team5115.robot.subsystems.Gimbal;
-import org.usfirst.frc.team5115.robot.subsystems.Rangefinders;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,10 +31,13 @@ public class Robot extends IterativeRobot {
 	public static Preferences prefs;			//subsystems used
 	public static OI oi;
 	public static Chassis chassis;
+	public static Arm arm;
+	public static BallFondler ballfondler;
 	public static Gimbal gimbal;
-	public static Rangefinders rangefinders;
 	
 	public static TankDrive td;
+	public static ArcadeDrive arcaded;
+	public static ArmDrive ad;
 	public static GimbalControl gc;
 	public static boolean fieldOriented = false;	//whether it is driving in field oriented mode
 
@@ -45,10 +52,13 @@ public class Robot extends IterativeRobot {
     	prefs = Preferences.getInstance();
 		oi = new OI();					//making objects
 		chassis = new Chassis();
+		arm = new Arm();
+		ballfondler = new BallFondler();
 		gimbal = new Gimbal();
-		rangefinders = new Rangefinders();
 		
 		td = new TankDrive();
+		arcaded = new ArcadeDrive();
+		ad = new ArmDrive();
 		gc = new GimbalControl();
 		
 		//SmartDashboard.putData("Turn Command", ac);
@@ -69,8 +79,12 @@ public class Robot extends IterativeRobot {
     
     // For the entirety of its short life, teleopInit() is moving. It sets in motion the essencial processes that allow the drivers to drive.
     public void teleopInit() {
+    	chassis.direction = Chassis.DIR_ARM;
+    	
     	chassis.inuse = false;
+    	arm.inuse = false;
     	td.start();
+    	ad.start();
     	gc.start();
     	//chassis.imuStart();		//starts imu
     }
@@ -82,7 +96,9 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	SmartDashboard.putNumber("Front distance", rangefinders.getVoltage(Rangefinders.FRONT));	//displays rangefinder value on dashboard
+    	SmartDashboard.putNumber("Left Potentiometer", arm.getLeftPot());
+    	SmartDashboard.putNumber("Right Potentiometer", arm.getRightPot());
+    	SmartDashboard.putString("Direction", chassis.direction == 1 ? "ARM" : "BALL");
         Scheduler.getInstance().run();		//runs scheduler
         
         Timer.delay(0.02);
