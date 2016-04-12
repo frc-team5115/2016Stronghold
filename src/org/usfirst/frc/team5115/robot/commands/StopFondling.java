@@ -17,10 +17,7 @@ public class StopFondling extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    		Robot.ballfondler.stopFondling();
-    		Timer.delay(.5);
-    		Robot.ballfondler.squeeze();
-    		
+    	Robot.f.cancel();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -39,6 +36,5 @@ public class StopFondling extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	Robot.ballfondler.squeeze();
     }
 }

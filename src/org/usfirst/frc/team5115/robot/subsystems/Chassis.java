@@ -7,6 +7,7 @@ import org.usfirst.frc.team5115.robot.Robot;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -18,8 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Chassis extends Subsystem {
 	
-	public final static int DIR_ARM = 1;
-	public final static int DIR_BALL = -1;
+	public final static int DIR_ARM = -1;
+	public final static int DIR_BALL = 1;
 	
 	public boolean inuse;	//lets outside commands know what is happening
 	public int direction;
@@ -29,9 +30,9 @@ public class Chassis extends Subsystem {
     Map<String, Double> speeds;		// mapping text (string) to the speed of each motor
     
     AHRS navx;
+    ADXRS450_Gyro gyro;
     
     public Chassis() {
-    //	imu = new AHRS(SerialPort.Port.kMXP);
     	
     	// intialize the motors with the correct CAN ids
     	motors = new HashMap<String, CANTalon>();
@@ -40,10 +41,10 @@ public class Chassis extends Subsystem {
     	motors.put("left2", new CANTalon(3));
     	motors.put("right2", new CANTalon(4));
     	
-    	motors.get("left").changeControlMode(TalonControlMode.Speed);
-    	motors.get("right").changeControlMode(TalonControlMode.Speed);
-    	motors.get("left").setPID(0.25, 0.002, 125);
-    	motors.get("right").setPID(0.25, 0.003, 50);
+//    	motors.get("left").changeControlMode(TalonControlMode.Speed);
+//    	motors.get("right").changeControlMode(TalonControlMode.Speed);
+//    	motors.get("left").setPID(0.25, 0.002, 125);
+//    	motors.get("right").setPID(0.25, 0.003, 50);
     	
     	motors.get("left2").changeControlMode(TalonControlMode.Follower);
     	motors.get("right2").changeControlMode(TalonControlMode.Follower);
@@ -51,12 +52,14 @@ public class Chassis extends Subsystem {
     	motors.get("right2").set(motors.get("right").getDeviceID());
     	
     	motors.get("right").reverseOutput(true);
-    	motors.get("right").reverseSensor(true);
+//    	motors.get("right").reverseSensor(true);
     	
     	// initialize an empty map for speeds
     	speeds = new HashMap<String, Double>();
     	
     	navx = new AHRS(SerialPort.Port.kMXP);
+    	resetGyro();
+    	resetEncoders();
     }
     
     // searches the speeds for the highest value greater than 1, then divides all the speeds by that value
@@ -77,21 +80,19 @@ public class Chassis extends Subsystem {
    
     public void tankDrive(double right, double left, double throttle) {
     	speeds.put("left", left);
-    	speeds.put("right", right);
+    	speeds.put("right", -right);
     	normSpeeds();
     	
 //    	if (Robot.arm.getLeftPot() > Arm.MAGIC_NUMBER)
 //    		throttle /= 2;
     	
     	for (String key : speeds.keySet())
-    		motors.get(key).set(speeds.get(key) * direction * throttle * 1000);
-    	
-    	SmartDashboard.putNumber("Encoder speed", motors.get("left").getSpeed());
+    		motors.get(key).set(speeds.get(key) * direction * throttle);
     }
     
     // NAVX WRAPPERS
     public double getYaw() {
-    	return navx.getRoll();
+    	return navx.getYaw();
     }
     
     //navx is mounted sideways
@@ -100,19 +101,39 @@ public class Chassis extends Subsystem {
     }
     
     public double getRoll() {
-    	return navx.getYaw();
+    	return navx.getRoll();
     }
     
-    public void resetImu() {
+    public void resetGyro() {
 		navx.reset();
 	}
     
+    // GYRO WRAPPERS
+//    public void calibrate(){
+//    	gyro.calibrate();
+//    }
+//    
+//    public void resetGyro() {
+//    	gyro.reset();
+//    }
+//    
+//    public double getYaw() {
+//    	return gyro.getAngle() % 360;
+//    }
+    
     // ENCODER WRAPPERS
+    public double leftDist() {
+    	double leftDist = motors.get("left").getPosition() * direction;
+    	return leftDist / 1440 * 7 * Math.PI / 12;
+    }
+    
+    public double rightDist() {
+    	double rightDist = -motors.get("right").getPosition() * direction;
+    	return rightDist / 1440 * 7 * Math.PI / 12;
+    }
+    
     public double distanceTraveled() {
-    	double leftDist = motors.get("left").getPosition();
-    	double rightDist = motors.get("right").getPosition();
-    	double avgDist = (leftDist + rightDist) / 2;
-    	return avgDist / 1440 * 8 * Math.PI / 12;
+    	return (leftDist() + rightDist()) / 2;
     }
     
     public void resetEncoders() {

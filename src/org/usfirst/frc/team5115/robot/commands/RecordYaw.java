@@ -1,18 +1,21 @@
-
 package org.usfirst.frc.team5115.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 import org.usfirst.frc.team5115.robot.Robot;
+import org.usfirst.frc.team5115.robot.subsystems.Chassis;
 
 /**
  *
  */
-public class GimbalControl extends Command {
+public class RecordYaw extends Command {
+	double a;
 
-    public GimbalControl() {
-       // Use requires() here to declare subsystem dependencies
-       requires(Robot.gimbal);
+    public RecordYaw() {
+    	
+
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
@@ -21,8 +24,6 @@ public class GimbalControl extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.gimbal.xServo.setAngle(Robot.gimbal.xServo.getAngle() + Robot.oi.cameraX());
-    	Robot.gimbal.yServo.setAngle(Robot.gimbal.yServo.getAngle() + Robot.oi.cameraY());
     }
 
     // Make this return true when this Command no longer needs to run execute()

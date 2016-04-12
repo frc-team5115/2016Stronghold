@@ -4,6 +4,7 @@ package org.usfirst.frc.team5115.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 	
 /**
@@ -17,11 +18,11 @@ public class BallFondler extends Subsystem {
 	public BallFondler()	{
 		shoot = new Victor(1);
 		lift = new Relay(0);
-		isBall = new DigitalInput(2);
+		isBall = new DigitalInput(7);
 	}
 	
-	public void fondle()	{
-		shoot.set(.35);
+	public void fondle() {
+		shoot.set(.5);
 	}
 	
 	public void stopFondling()	{
@@ -40,15 +41,17 @@ public class BallFondler extends Subsystem {
 		lift.set(Relay.Value.kReverse);
 	}
 	
+	public void holdHeight() {
+		lift.set(Relay.Value.kOff);
+	}
+	
 	public boolean isFondling() {
 		return !isBall.get();
 	}
+	
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
-    }
+    public void initDefaultCommand() {}
 }
 

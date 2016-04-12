@@ -27,32 +27,28 @@ public class Arm extends Subsystem {
     Victor motor;
     
     public Arm() {
-    	topLimit = new DigitalInput(0);
-    	bottomLimit = new DigitalInput(1);
+    	topLimit = new DigitalInput(9);
+    	bottomLimit = new DigitalInput(8);
     	leftpot = new AnalogInput(0);
     	rightpot = new AnalogInput(1);
     	motor = new Victor(0);
     }
     
     public void move(int d) {
-    	if (d == 1 && topLimit.get())
-    		motor.set(0.5);
-    	else if (d == -1 && !bottomLimit.get())
-    		motor.set(-0.5);
+    	if (d == 1 && !getTopSwitch())
+    		motor.set(-0.7);
+    	else if (d == -1 && !getBottomSwitch())
+    		motor.set(0.7);
     	else
     		motor.set(0);
     }
     
-    public double getLeftPot()	{
-    	return leftpot.getValue();
+    public boolean getTopSwitch() {
+    	return !topLimit.get();
     }
     
-    public double getRightPot()	{
-    	return rightpot.getValue();
-    }
-    
-    public double getAvgPot()	{
-    	return (leftpot.getValue() + rightpot.getValue()) /2;
+    public boolean getBottomSwitch() {
+    	return bottomLimit.get();
     }
     
     public void initDefaultCommand() {

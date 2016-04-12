@@ -2,53 +2,38 @@ package org.usfirst.frc.team5115.robot.commands;
 
 import org.usfirst.frc.team5115.robot.Robot;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
 public class StraightLine extends Command {
-	
-	double kp = 0.006;
-	double ki = 0.000001;
-	double kd = 0.0001;
-	
-	double errorAccum = 0;
-	double lastError = 0;
-	
-	double setSpeed = 0.3;
-	
-	double dist;
 
-    public StraightLine(double d) {
+	double dist;
+	double speed;
+	
+    public StraightLine(double d, double s) {
         dist = d;
+        speed = s;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.chassis.inuse = true;
-    	Robot.chassis.resetImu();
     	Robot.chassis.resetEncoders();
+    	Timer.delay(0.1);
+    	Robot.chassis.tankDrive(speed, speed, 1);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double error = Robot.chassis.getYaw();
-    	
-    	if (lastError == 0)
-    		lastError = error;
-    	errorAccum += error;
-    	
-    	double correction = error * kp + errorAccum * ki + (error - lastError) * kd;
-    	
-    	lastError = error;
-    	
-    	Robot.chassis.tankDrive(setSpeed + correction, setSpeed - correction, 1);
+    	//System.out.println(Robot.chassis.distanceTraveled());
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.chassis.distanceTraveled() >= dist;
+    	return Robot.chassis.distanceTraveled() >= dist;
     }
 
     // Called once after isFinished returns true

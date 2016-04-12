@@ -16,12 +16,12 @@ public class ArcadeDrive extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if (!Robot.chassis.inuse)		// if nothing else is using the wheels, then allow the controller to control them
-    		Robot.chassis.tankDrive(Robot.oi.getY() + Robot.oi.getX(), Robot.oi.getY() - Robot.oi.getX(), Robot.oi.getThrottle());
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	if (!Robot.chassis.inuse)		// if nothing else is using the wheels, then allow the controller to control them
+    		Robot.chassis.tankDrive(Robot.oi.getY() + Robot.oi.getX(), Robot.oi.getY() - Robot.oi.getX(), Robot.oi.getThrottle());
     }
 
     // Make this return true when this Command no longer needs to run execute()
