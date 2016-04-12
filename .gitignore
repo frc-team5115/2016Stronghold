@@ -47,5 +47,8 @@ Temporary Items
 .apdisk
 /bin/
 
-# .class files
+# .class and other files we don't care about
 *.class
+.classpath
+.project
+*.jar
