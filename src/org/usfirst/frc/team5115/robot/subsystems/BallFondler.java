@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.Victor;
  *
  */
 public class BallFondler extends Subsystem {
+
+	public boolean inuse = false;
+
 	Victor shoot;
 	Relay lift;
 	DigitalInput isBall;

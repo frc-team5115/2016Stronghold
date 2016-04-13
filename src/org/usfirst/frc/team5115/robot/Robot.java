@@ -126,6 +126,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
     	chassis.inuse = false;
     	arm.inuse = false;
+	ballfondler.inuse = false;
     	
     	arcaded.start();
     	ad.start();
