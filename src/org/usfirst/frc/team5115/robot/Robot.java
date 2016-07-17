@@ -79,17 +79,17 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putData("Defense", defenseChooser);
     	SmartDashboard.putData("Gate Chooser", gateChooser);
     	
-		chassis = new Chassis();
-		arm = new Arm();
-		ballfondler = new BallFondler();
-		
-		arcaded = new ArcadeDrive();
-		ad = new ArmDrive();
-		fhm = new FondlerHeightManager();
-		f = new Fondle();
-		
-		CDF cdf = new CDF();
-		SmartDashboard.putData("CDF", cdf);
+	chassis = new Chassis();
+	arm = new Arm();
+	ballfondler = new BallFondler();
+	
+	arcaded = new ArcadeDrive();
+	ad = new ArmDrive();
+	fhm = new FondlerHeightManager();
+	f = new Fondle();
+	
+	CDF cdf = new CDF();
+	SmartDashboard.putData("CDF", cdf);
 
     	nt = NetworkTable.getTable("pi");
     	nt.putNumber("riostatus", 0);
