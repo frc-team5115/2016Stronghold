@@ -16,7 +16,7 @@ public class BallFondler extends Subsystem {
 	DigitalInput isBall;
 	
 	public BallFondler()	{
-		shoot = new Victor(1);
+		shoot = new Victor(2);
 		lift = new Relay(0);
 		isBall = new DigitalInput(7);
 	}

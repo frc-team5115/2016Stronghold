@@ -23,9 +23,9 @@ public class Auto extends CommandGroup {
     	case 0:
     		addSequential(new PrintCommand("Low Bar"));
     		addSequential(new ArmMove(-1, 5));
-            addSequential(new StraightLine(4, 0.6));
+            addSequential(new StraightLine(5, 0.6));
             addSequential(new Turn(30));
-            addParallel(new StraightLine(9, 0.6));
+            addParallel(new StraightLine(8, 0.6));
             addParallel(new ArmMove(1, 3));
             addSequential(new WaitForChildren());
             addSequential(new Turn(-120));

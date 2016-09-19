@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Arm extends Subsystem {
 	
-	public static final double MAGIC_NUMBER = 42;
     
 	public boolean inuse = false;
 	public double mainPos = 50;
@@ -25,26 +24,33 @@ public class Arm extends Subsystem {
     AnalogInput leftpot;
     AnalogInput rightpot;
     Victor motor;
-    
+    Victor motor2;
     public Arm() {
-    	topLimit = new DigitalInput(9);
-    	bottomLimit = new DigitalInput(8);
+    	topLimit = new DigitalInput(8);
+    	bottomLimit = new DigitalInput(9);
     	leftpot = new AnalogInput(0);
     	rightpot = new AnalogInput(1);
     	motor = new Victor(0);
+    	motor2 = new Victor(3);
     }
     
     public void move(int d) {
-    	if (d == 1 && !getTopSwitch())
+    	if (d == 1 && !getTopSwitch()) {
     		motor.set(-0.7);
-    	else if (d == -1 && !getBottomSwitch())
+    		motor2.set(-0.7);
+    	}
+    	else if (d == -1 && !getBottomSwitch()) {
     		motor.set(0.7);
-    	else
+    		motor2.set(0.7);
+    	}
+    	else	{
     		motor.set(0);
-    }
+    		motor2.set(0);
+    	}
+	}
     
     public boolean getTopSwitch() {
-    	return !topLimit.get();
+    	return topLimit.get();
     }
     
     public boolean getBottomSwitch() {
