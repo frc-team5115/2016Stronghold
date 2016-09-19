@@ -46,3 +46,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /bin/
+
+# .class and other files we don't care about
+*.class
+.classpath
+.project
+*.jar

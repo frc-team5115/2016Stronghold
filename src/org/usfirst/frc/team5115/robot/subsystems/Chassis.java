@@ -41,18 +41,12 @@ public class Chassis extends Subsystem {
     	motors.put("left2", new CANTalon(3));
     	motors.put("right2", new CANTalon(4));
     	
-//    	motors.get("left").changeControlMode(TalonControlMode.Speed);
-//    	motors.get("right").changeControlMode(TalonControlMode.Speed);
-//    	motors.get("left").setPID(0.25, 0.002, 125);
-//    	motors.get("right").setPID(0.25, 0.003, 50);
-    	
     	motors.get("left2").changeControlMode(TalonControlMode.Follower);
     	motors.get("right2").changeControlMode(TalonControlMode.Follower);
     	motors.get("left2").set(motors.get("left").getDeviceID());
     	motors.get("right2").set(motors.get("right").getDeviceID());
     	
     	motors.get("right").reverseOutput(true);
-//    	motors.get("right").reverseSensor(true);
     	
     	// initialize an empty map for speeds
     	speeds = new HashMap<String, Double>();
@@ -95,7 +89,6 @@ public class Chassis extends Subsystem {
     	return navx.getYaw();
     }
     
-    //navx is mounted sideways
     public double getPitch() {
     	return navx.getPitch();
     }
@@ -108,18 +101,6 @@ public class Chassis extends Subsystem {
 		navx.reset();
 	}
     
-    // GYRO WRAPPERS
-//    public void calibrate(){
-//    	gyro.calibrate();
-//    }
-//    
-//    public void resetGyro() {
-//    	gyro.reset();
-//    }
-//    
-//    public double getYaw() {
-//    	return gyro.getAngle() % 360;
-//    }
     
     // ENCODER WRAPPERS
     public double leftDist() {
